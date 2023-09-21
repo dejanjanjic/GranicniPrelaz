@@ -47,6 +47,8 @@ public class Kamion extends Vozilo implements KamionInterfejs {
 
 
             while (!zavrsenaPolicijskaObrada) {
+                if(!Simulacija.pauza)
+                {
 
                     if (Simulacija.granicniRed.size() > 0 && Simulacija.granicniRed.peek() == this && Simulacija.pk.isSlobodan()) {
 
@@ -55,7 +57,11 @@ public class Kamion extends Vozilo implements KamionInterfejs {
                         Simulacija.pk.setSlobodan(false); //zauzimamo policijski terminal
 
                         Main.pomjeriVozilaNaPolicijski(3);
+
                         Simulacija.granicniRed.poll(); //izlazi iz granicnog reda
+                        if(Simulacija.granicniRed.peek() != null){
+                            Simulacija.granicniRed.peek().start();
+                        }
 
 
                         mozeProciPolicijskiTerminal = Simulacija.pk.obradiVozilo(this); //obradjujemo vozilo
@@ -69,14 +75,22 @@ public class Kamion extends Vozilo implements KamionInterfejs {
                         System.out.println(this + ": izasao iz policijskog terminala!");
 
                     }
-
-
+                }else{
+                    synchronized (Simulacija.lock){
+                        try{
+                            Simulacija.lock.wait();
+                        }catch (InterruptedException e){
+                            Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
+                        }
+                    }
+                }
             }
 
             if(mozeProciPolicijskiTerminal){
-                while(!zavrsenaCarinskaObrada){
+                while(!zavrsenaCarinskaObrada) {
 
-                    //synchronized (this) {
+                    if (!Simulacija.pauza) {
+
                         if (Simulacija.ck.isSlobodan()) {
                             Simulacija.ck.setSlobodan(false);
                             Main.pomjeriVozilaNaCarinski(3, 2);
@@ -84,20 +98,30 @@ public class Kamion extends Vozilo implements KamionInterfejs {
                             Simulacija.pk.setSlobodan(true);
 
                             mozeProciCarinskiTerminal = Simulacija.ck.obradiVozilo(this);
-                            if (!mozeProciCarinskiTerminal) {
-                                Main.pomjeriNaTrecuScenu(4);
-                                System.out.println("Pao carinsku provjeru!");
-                            }
-                            else {
-                                Main.izbrisiVozilo(2);
-                            }
-                            System.out.println(this + ": izasao iz carinskog terminala!");
+                            //if(!Simulacija.pauza)
+                            //{
+                                if (!mozeProciCarinskiTerminal) {
+                                    Main.pomjeriNaTrecuScenu(4);
+                                    System.out.println("Pao carinsku provjeru!");
+                                } else {
+                                    Main.izbrisiVozilo(2);
+                                }
+                                System.out.println(this + ": izasao iz carinskog terminala!");
 
-                            Simulacija.ck.setSlobodan(true);
-                            zavrsenaCarinskaObrada = true;
+                                Simulacija.ck.setSlobodan(true);
+                                zavrsenaCarinskaObrada = true;
+                            //}
                             // TODO: 9.9.2023. Napraviti logiku za situacije kad vozila ne mogu proci terminal
                         }
-                    //}
+                    }else{
+                        synchronized (Simulacija.lock){
+                            try{
+                                Simulacija.lock.wait();
+                            }catch (InterruptedException e){
+                                Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
+                            }
+                        }
+                    }
                 }
             }
             else{

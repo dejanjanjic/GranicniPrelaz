@@ -23,30 +23,8 @@ public class Simulacija {
     public static final int BROJ_LICNIH_VOZILA = 35;
     public static final int BROJ_AUTOBUSA = 10;
     public static final int BROJ_KAMIONA = 5;
+    //boolean koji provjerava da li je pauza
+    public static volatile boolean pauza = true;
+    public static final Object lock = new Object();
 
-//    public static void main(String[] args) {
-//
-//
-//
-//        for (int i = 0; i < BROJ_LICNIH_VOZILA; i++) {
-//            granicniRed.add(new LicnoVozilo());
-//        }
-//        for (int i = 0; i < BROJ_AUTOBUSA; i++) {
-//            granicniRed.add(new Autobus());
-//        }
-//        for (int i = 0; i < BROJ_KAMIONA; i++) {
-//            granicniRed.add(new Kamion());
-//        }
-////        //postavljamo vozila na nasumicne pozicije
-////        List<Vozilo> list = new ArrayList<>(granicniRed);
-////        Collections.shuffle(list);
-//        //cuvamo pozicije za svako vozilo
-//
-//        for (Vozilo vozilo :
-//                granicniRed) {
-//            vozilo.start();
-//        }
-//
-//
-//    }
 }

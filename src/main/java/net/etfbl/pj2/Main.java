@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -28,8 +29,8 @@ import net.etfbl.pj2.vozila.interfejsi.KamionInterfejs;
 import net.etfbl.pj2.vozila.interfejsi.LicnoVoziloInterfejs;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -45,10 +46,11 @@ public class Main extends Application {
     public static StackPane carinskiTerminal1 = new StackPane();
     public static StackPane carinskiTerminalK = new StackPane();
 
+
     @Override
     public void start(Stage stage) throws IOException {
         StackPane root = new StackPane();
-        Scene scene = new Scene(root, 670, 663);
+        Scene scene = new Scene(root, 670, 690);
         Image image = new Image("icon.png");
         stage.getIcons().add(image);
         stage.setTitle("Granicni prelaz");
@@ -172,12 +174,12 @@ public class Main extends Application {
 
         //Kreiranje druge scene
         StackPane root2 = new StackPane();
-        Scene scene2 = new Scene(root2, 670, 663);
+        Scene scene2 = new Scene(root2, 670, 690);
         AnchorPane anchorPane2 = new AnchorPane();
         //TilePane ostatakReda = new TilePane();
         ostatakReda.setLayoutX(179);
-        ostatakReda.setLayoutY(107);
-        ostatakReda.setVgap(7);
+        ostatakReda.setLayoutY(80);
+        //ostatakReda.setVgap(1);
         ostatakReda.setHgap(1);
         root2.getChildren().add(anchorPane2);
         anchorPane2.getChildren().add(ostatakReda);
@@ -195,7 +197,7 @@ public class Main extends Application {
         //Kreiranje trece scene
         StackPane root3 = new StackPane();
         AnchorPane anchorPane3 = new AnchorPane();
-        Scene scene3 = new Scene(root3, 670, 663);
+        Scene scene3 = new Scene(root3, 670, 690);
         root3.getChildren().add(anchorPane3);
 
         //kreiranje buttona za prelazak na prvu scenu
@@ -206,6 +208,14 @@ public class Main extends Application {
         prikaziPrvuScenu.setPrefWidth(88);
         anchorPane3.getChildren().add(prikaziPrvuScenu);
 
+        //kreiranje buttona za pauzu
+        Button pauzaButton = new Button("Start/Pauza");
+        pauzaButton.setLayoutX(395);
+        pauzaButton.setLayoutY(14);
+        pauzaButton.setPrefHeight(34);
+        pauzaButton.setPrefWidth(88);
+        anchorPane.getChildren().add(pauzaButton);
+
         //Dodavanje TilePane na trecu scenu
         kaznjeni.setLayoutX(179);
         kaznjeni.setLayoutY(107);
@@ -213,17 +223,21 @@ public class Main extends Application {
         kaznjeni.setHgap(1);
         anchorPane3.getChildren().add(kaznjeni);
 
+
         //logika za buttone
         prikaziDruguScenu.setOnAction(event -> stage.setScene(scene2));
         prikaziTrecuScenu.setOnAction(event -> stage.setScene(scene3));
         prikaziPrvuScenu.setOnAction(event -> stage.setScene(scene));
-
-
-
+        pauzaButton.setOnAction(event -> {
+            Simulacija.pauza = !Simulacija.pauza;
+            synchronized (Simulacija.lock){
+                if(!Simulacija.pauza){
+                    Simulacija.lock.notifyAll();
+                }
+            }
+        });
 
         stage.show();
-
-
 
         ArrayList<Vozilo> probniRed = new ArrayList<>();
 
@@ -243,15 +257,18 @@ public class Main extends Application {
                 probniRed) {
             dodajVozilo(vozilo);
         }
+        Simulacija.granicniRed.peek().start();
 
-        for (Vozilo vozilo :
-                Simulacija.granicniRed) {
-            vozilo.start();
-        }
+//        for (Vozilo vozilo :
+//                Simulacija.granicniRed) {
+//            vozilo.start();
+//        }
     }
 
     public static void main(String[] args) {
+
         launch(args);
+
     }
 
     public static void dodajVozilo(Vozilo vozilo) {
@@ -460,4 +477,6 @@ public class Main extends Application {
 
         });
     }
+
+
 }
