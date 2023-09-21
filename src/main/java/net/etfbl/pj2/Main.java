@@ -1,11 +1,13 @@
 package net.etfbl.pj2;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,11 +17,15 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import net.etfbl.pj2.simulacija.Simulacija;
 import net.etfbl.pj2.vozila.Autobus;
 import net.etfbl.pj2.vozila.Kamion;
 import net.etfbl.pj2.vozila.LicnoVozilo;
 import net.etfbl.pj2.vozila.Vozilo;
+import net.etfbl.pj2.vozila.interfejsi.AutobusInterfejs;
+import net.etfbl.pj2.vozila.interfejsi.KamionInterfejs;
+import net.etfbl.pj2.vozila.interfejsi.LicnoVoziloInterfejs;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +35,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Main extends Application {
-    private static int br;
 
     public static VBox pocetakReda = new VBox();
     public static TilePane ostatakReda = new TilePane();
@@ -39,7 +44,6 @@ public class Main extends Application {
     public static StackPane policijskiTerminalK = new StackPane();
     public static StackPane carinskiTerminal1 = new StackPane();
     public static StackPane carinskiTerminalK = new StackPane();
-    public static Object lock1 = new Object();
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -219,6 +223,8 @@ public class Main extends Application {
 
         stage.show();
 
+
+
         ArrayList<Vozilo> probniRed = new ArrayList<>();
 
         for (int i = 0; i < Simulacija.BROJ_LICNIH_VOZILA; i++) {
@@ -252,26 +258,30 @@ public class Main extends Application {
         Simulacija.granicniRed.add(vozilo);
         StackPane novoVozilo = new StackPane();
         // Dodajte iste komponente kao i postojeći StackPane
-        Rectangle rectangle = new Rectangle(60.0, 55.0);
-        rectangle.setArcHeight(5.0);
-        rectangle.setArcWidth(5.0);
-        //rectangle.setFill(javafx.scene.paint.Color.RED);
-        rectangle.setStroke(javafx.scene.paint.Color.BLACK);
-        rectangle.setStrokeType(StrokeType.INSIDE);
+        Image imageAutomobil = new Image("automobil.png");
+        Image imageAutobus = new Image("autobus.png");
+        Image imageKamion = new Image("kamion.png");
+        ImageView imageView = new ImageView();
 
-        Text text = new Text();
-        if(vozilo instanceof LicnoVozilo){
-            rectangle.setFill(Color.FIREBRICK);
-            text = new Text("A");
-        } else if (vozilo instanceof Kamion) {
-            rectangle.setFill(Color.BLUEVIOLET);
-            text = new Text("K");
-        } else if (vozilo instanceof Autobus) {
-            rectangle.setFill(Color.YELLOW);
-            text = new Text("B");
+        if(vozilo instanceof LicnoVoziloInterfejs){
+            imageView.setImage(imageAutomobil);
+        } else if (vozilo instanceof KamionInterfejs) {
+            imageView.setImage(imageKamion);
+        } else if (vozilo instanceof AutobusInterfejs) {
+            imageView.setImage(imageAutobus);
         }
+        // Add a click event handler to the ImageView
+        imageView.setOnMouseClicked(event -> {
+            // Create and configure an Alert dialog
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informacije o vozilu");
+            alert.setHeaderText(null);
+            alert.setContentText(vozilo.toString());
 
-        novoVozilo.getChildren().addAll(rectangle, text);
+            // Show the Alert dialog
+            alert.showAndWait();
+        });
+        novoVozilo.getChildren().addAll(imageView);
         if(Simulacija.granicniRed.size() <= 5)
         {
             pocetakReda.getChildren().add(novoVozilo);
@@ -284,42 +294,40 @@ public class Main extends Application {
         //1 - policijski terminal 1
         //2 - policijski terminal 2
         //3- policijski terminal za kamione
-        //synchronized (lock1)
-        //{
-            Platform.runLater(() -> {
 
-                StackPane voziloNaTerminalu = null;
-                StackPane voziloNaPocetniRed = null;
-                for (Node node : pocetakReda.getChildren()) {
-                    if (node instanceof StackPane) {
-                        voziloNaTerminalu = (StackPane) node;
-                        break;
-                    }
-                }
+        Platform.runLater(() -> {
 
-                for (Node node : ostatakReda.getChildren()) {
-                    if (node instanceof StackPane) {
-                        voziloNaPocetniRed = (StackPane) node;
-                        break;
-                    }
+            StackPane voziloNaTerminalu = null;
+            StackPane voziloNaPocetniRed = null;
+            for (Node node : pocetakReda.getChildren()) {
+                if (node instanceof StackPane) {
+                    voziloNaTerminalu = (StackPane) node;
+                    break;
                 }
+            }
 
-                // Ako smo pronašli StackPane unutar VBox-a, premjestite ga
-                // u StackPane s tekstom "P1"
-                if (voziloNaTerminalu != null) {
-                    if (terminal == 1) {
-                        policijskiTerminal1.getChildren().add(voziloNaTerminalu);
-                    } else if (terminal == 2) {
-                        policijskiTerminal2.getChildren().add(voziloNaTerminalu);
-                    } else if (terminal == 3) {
-                        policijskiTerminalK.getChildren().add(voziloNaTerminalu);
-                    }
+            for (Node node : ostatakReda.getChildren()) {
+                if (node instanceof StackPane) {
+                    voziloNaPocetniRed = (StackPane) node;
+                    break;
                 }
-                if (voziloNaPocetniRed != null) {
-                    pocetakReda.getChildren().add(voziloNaPocetniRed);
+            }
+
+            // Ako smo pronašli StackPane unutar VBox-a, premjestite ga
+            // u StackPane s tekstom "P1"
+            if (voziloNaTerminalu != null) {
+                if (terminal == 1) {
+                    policijskiTerminal1.getChildren().add(voziloNaTerminalu);
+                } else if (terminal == 2) {
+                    policijskiTerminal2.getChildren().add(voziloNaTerminalu);
+                } else if (terminal == 3) {
+                    policijskiTerminalK.getChildren().add(voziloNaTerminalu);
                 }
-            });
-        //}
+            }
+            if (voziloNaPocetniRed != null) {
+                pocetakReda.getChildren().add(voziloNaPocetniRed);
+            }
+        });
     }
 
     public static void pomjeriVozilaNaCarinski(int saTerminala, int naTerminal) {
@@ -452,5 +460,4 @@ public class Main extends Application {
 
         });
     }
-
 }
