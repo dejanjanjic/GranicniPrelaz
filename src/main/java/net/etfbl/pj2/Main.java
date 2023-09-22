@@ -5,6 +5,7 @@ import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -46,6 +47,10 @@ public class Main extends Application {
     public static StackPane policijskiTerminalK = new StackPane();
     public static StackPane carinskiTerminal1 = new StackPane();
     public static StackPane carinskiTerminalK = new StackPane();
+    private Timer timer;
+    private int seconds = 0;
+    private int minutes = 0;
+    private Text timeText;
 
 
     @Override
@@ -61,100 +66,92 @@ public class Main extends Application {
         AnchorPane anchorPane = new AnchorPane();
         root.getChildren().add(anchorPane);
 
+        //Pozadinska slika za scenu 1
+        BackgroundImage backgroundImage = new BackgroundImage(
+                new javafx.scene.image.Image("background-1.png", 670, 690, false, true),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        Background background = new Background(backgroundImage);
+        root.setBackground(background);
+
         //dodavanje policijskog terminala 1
+        Image borderImage = new Image("border.png");
+        ImageView borderImageView1 = new ImageView(borderImage);
         Rectangle rectangle = new Rectangle(120, 110, Color.DODGERBLUE);
+        rectangle.setOpacity(0.1);
 
         Text text = new Text("P1");
         //StackPane policijskiTerminal1 = new StackPane(rectangle, text);
-        policijskiTerminal1.getChildren().add(rectangle);
-        policijskiTerminal1.getChildren().add(text);
+        //policijskiTerminal1.getChildren().add(rectangle);
+       // policijskiTerminal1.getChildren().add(text);
+        policijskiTerminal1.getChildren().add(borderImageView1);
         anchorPane.getChildren().add(policijskiTerminal1);
-        policijskiTerminal1.setLayoutX(14); // X koordinata
+        policijskiTerminal1.setLayoutX(145); // X koordinata //bilo 14
         policijskiTerminal1.setLayoutY(222); // Y koordinata
-        BorderStroke borderStroke = new BorderStroke(
-                Color.BLACK,
-                BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY,
-                new BorderWidths(1) // Debljina crne linije oko StackPane-a
-        );
-        Border border = new Border(borderStroke);
-        policijskiTerminal1.setBorder(border);
+//        BorderStroke borderStroke = new BorderStroke(
+//                Color.BLACK,
+//                BorderStrokeStyle.SOLID,
+//                CornerRadii.EMPTY,
+//                new BorderWidths(1) // Debljina crne linije oko StackPane-a
+//        );
+        //Border border = new Border(borderStroke);
+        //policijskiTerminal1.setBorder(border);
 
         //dodavanje policijskog terminala 2
         rectangle = new Rectangle(120, 110, Color.DODGERBLUE);
-
+        rectangle.setOpacity(0.1);
+        ImageView borderImageView2 = new ImageView(borderImage);
         text = new Text("P2");
+        policijskiTerminal2.getChildren().add(borderImageView2);
         //StackPane policijskiTerminal2 = new StackPane(rectangle, text);
-        policijskiTerminal2.getChildren().add(rectangle);
-        policijskiTerminal2.getChildren().add(text);
+        //policijskiTerminal2.getChildren().add(rectangle);
+        //policijskiTerminal2.getChildren().add(text);
         anchorPane.getChildren().add(policijskiTerminal2);
         policijskiTerminal2.setLayoutX(275); // X koordinata
         policijskiTerminal2.setLayoutY(222); // Y koordinata
-        borderStroke = new BorderStroke(
-                Color.BLACK,
-                BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY,
-                new BorderWidths(1) // Debljina crne linije oko StackPane-a
-        );
-        border = new Border(borderStroke);
-        policijskiTerminal2.setBorder(border);
+
 
         //dodavanje policijskog terminala za kamione
         rectangle = new Rectangle(120, 110, Color.DODGERBLUE);
-
+        rectangle.setOpacity(0.1);
+        ImageView borderImageView3 = new ImageView(borderImage);
         text = new Text("PK");
+        policijskiTerminalK.getChildren().add(borderImageView3);
         //StackPane policijskiTerminalK = new StackPane(rectangle, text);
-        policijskiTerminalK.getChildren().add(rectangle);
-        policijskiTerminalK.getChildren().add(text);
+        //policijskiTerminalK.getChildren().add(rectangle);
+        //policijskiTerminalK.getChildren().add(text);
         anchorPane.getChildren().add(policijskiTerminalK);
-        policijskiTerminalK.setLayoutX(536); // X koordinata
+        policijskiTerminalK.setLayoutX(406); // X koordinata //bilo 536
         policijskiTerminalK.setLayoutY(222); // Y koordinata
-        borderStroke = new BorderStroke(
-                Color.BLACK,
-                BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY,
-                new BorderWidths(1) // Debljina crne linije oko StackPane-a
-        );
-        border = new Border(borderStroke);
-        policijskiTerminalK.setBorder(border);
+
 
         //dodavanje carinskog terminala 1
         rectangle = new Rectangle(120, 110, Color.DODGERBLUE);
-
+        rectangle.setOpacity(0.1);
+        ImageView borderImageView4 = new ImageView(borderImage);
         text = new Text("C1");
+        carinskiTerminal1.getChildren().add(borderImageView4);
         //StackPane carinskiTerminal1 = new StackPane(rectangle, text);
-        carinskiTerminal1.getChildren().add(rectangle);
-        carinskiTerminal1.getChildren().add(text);
+        //carinskiTerminal1.getChildren().add(rectangle);
+        //carinskiTerminal1.getChildren().add(text);
         anchorPane.getChildren().add(carinskiTerminal1);
         carinskiTerminal1.setLayoutX(145); // X koordinata
         carinskiTerminal1.setLayoutY(84); // Y koordinata
-        borderStroke = new BorderStroke(
-                Color.BLACK,
-                BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY,
-                new BorderWidths(1) // Debljina crne linije oko StackPane-a
-        );
-        border = new Border(borderStroke);
-        carinskiTerminal1.setBorder(border);
+
 
         //dodavanje carinskog terminala za kamione
         rectangle = new Rectangle(120, 110, Color.DODGERBLUE);
-
+        rectangle.setOpacity(0.1);
+        ImageView borderImageView5 = new ImageView(borderImage);
         text = new Text("CK");
+        carinskiTerminalK.getChildren().add(borderImageView5);
         //StackPane carinskiTerminalK = new StackPane(rectangle, text);
-        carinskiTerminalK.getChildren().add(rectangle);
-        carinskiTerminalK.getChildren().add(text);
+        //carinskiTerminalK.getChildren().add(rectangle);
+        //carinskiTerminalK.getChildren().add(text);
         anchorPane.getChildren().add(carinskiTerminalK);
         carinskiTerminalK.setLayoutX(406); // X koordinata
         carinskiTerminalK.setLayoutY(84); // Y koordinata
-        borderStroke = new BorderStroke(
-                Color.BLACK,
-                BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY,
-                new BorderWidths(1) // Debljina crne linije oko StackPane-a
-        );
-        border = new Border(borderStroke);
-        carinskiTerminalK.setBorder(border);
+
 
         //kreiranje VBox-a u kojem ce se nalaziti prvih 5 vozila u redu
         //VBox pocetakReda = new VBox();
@@ -179,11 +176,19 @@ public class Main extends Application {
         AnchorPane anchorPane2 = new AnchorPane();
         //TilePane ostatakReda = new TilePane();
         ostatakReda.setLayoutX(179);
-        ostatakReda.setLayoutY(80);
+        ostatakReda.setLayoutY(105);
         //ostatakReda.setVgap(1);
         ostatakReda.setHgap(1);
         root2.getChildren().add(anchorPane2);
         anchorPane2.getChildren().add(ostatakReda);
+
+        //Pozadinska slika za scenu 2
+        BackgroundImage backgroundImage2 = new BackgroundImage(
+                new javafx.scene.image.Image("background-2.png", 670, 690, false, true),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        Background background2 = new Background(backgroundImage2);
+        root2.setBackground(background2);
 
         //kreiranje buttona za prelazak na trecu scenu
         Button prikaziTrecuScenu = new Button("Treca scena");
@@ -224,6 +229,25 @@ public class Main extends Application {
         kaznjeni.setHgap(1);
         anchorPane3.getChildren().add(kaznjeni);
 
+        //kreiranje stoperice
+        timeText = new Text("00:00");
+        timeText.setStyle("-fx-font-size: 25;");
+        timeText.setLayoutX(305);
+        timeText.setLayoutY(120);
+
+        anchorPane.getChildren().add(timeText);
+
+        timer = new Timer(true);
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if(!Simulacija.pauza) {
+                    updateTime();
+                }
+            }
+        }, 1000, 1000);
+
 
         //logika za buttone
         prikaziDruguScenu.setOnAction(event -> stage.setScene(scene2));
@@ -239,6 +263,15 @@ public class Main extends Application {
         });
 
         stage.show();
+
+
+//        for (Vozilo vozilo :
+//                Simulacija.granicniRed) {
+//            vozilo.start();
+//        }
+    }
+
+    public static void main(String[] args) {
 
         ArrayList<Vozilo> probniRed = new ArrayList<>();
 
@@ -261,17 +294,11 @@ public class Main extends Application {
         }
 
         Simulacija.granicniRed.peek().start();
-
-//        for (Vozilo vozilo :
-//                Simulacija.granicniRed) {
-//            vozilo.start();
-//        }
-    }
-
-    public static void main(String[] args) {
-
         launch(args);
-
+        Simulacija.pauza = false;
+        synchronized (Simulacija.lock){
+            Simulacija.lock.notifyAll();
+        }
     }
 
     public static void dodajVozilo(Vozilo vozilo) {
@@ -307,6 +334,7 @@ public class Main extends Application {
             pocetakReda.getChildren().add(novoVozilo);
         }
         else{
+            novoVozilo.setRotate(270);
             ostatakReda.getChildren().add(novoVozilo);
         }
     }
@@ -338,13 +366,16 @@ public class Main extends Application {
             if (voziloNaTerminalu != null) {
                 if (terminal == 1) {
                     policijskiTerminal1.getChildren().add(voziloNaTerminalu);
+
                 } else if (terminal == 2) {
                     policijskiTerminal2.getChildren().add(voziloNaTerminalu);
                 } else if (terminal == 3) {
                     policijskiTerminalK.getChildren().add(voziloNaTerminalu);
                 }
+                StackPane.setMargin(voziloNaTerminalu, new Insets(30, 0, 0, 40));
             }
             if (voziloNaPocetniRed != null) {
+                voziloNaPocetniRed.setRotate(0);
                 pocetakReda.getChildren().add(voziloNaPocetniRed);
             }
         });
@@ -481,5 +512,14 @@ public class Main extends Application {
         });
     }
 
+    private void updateTime() {
+        seconds++;
+        if (seconds == 60) {
+            seconds = 0;
+            minutes++;
+        }
 
+        String timeString = String.format("%02d:%02d", minutes, seconds);
+        timeText.setText(timeString);
+    }
 }
