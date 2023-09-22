@@ -20,6 +20,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import net.etfbl.pj2.simulacija.Simulacija;
+import net.etfbl.pj2.terminalWatcher.TerminalWatcher;
 import net.etfbl.pj2.vozila.Autobus;
 import net.etfbl.pj2.vozila.Kamion;
 import net.etfbl.pj2.vozila.LicnoVozilo;
@@ -252,11 +253,13 @@ public class Main extends Application {
         }
 
         Collections.shuffle(probniRed);
+        new TerminalWatcher().start();
 
         for (Vozilo vozilo :
                 probniRed) {
             dodajVozilo(vozilo);
         }
+
         Simulacija.granicniRed.peek().start();
 
 //        for (Vozilo vozilo :

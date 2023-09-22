@@ -41,7 +41,7 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
             {
 
                 if (Simulacija.granicniRed.size() > 0 && Simulacija.granicniRed.peek() == this) {
-                    if (Simulacija.p1.isSlobodan()) {
+                    if (Simulacija.p1.isRadi() && Simulacija.p1.isSlobodan()) {
                         bioNaP1 = true;
                         System.out.println(this + ": usao u policijski terminal 1!");
                         Simulacija.p1.setSlobodan(false); //zauzimamo policijski terminal
@@ -68,7 +68,7 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
 
                         zavrsenaPolicijskaObrada = true;
 
-                    } else if (Simulacija.p2.isSlobodan()) {
+                    } else if (Simulacija.p2.isRadi() && Simulacija.p2.isSlobodan()) {
                         bioNaP2 = true;
                         System.out.println(this + ": usao u policijski terminal 2!");
                         Simulacija.p2.setSlobodan(false); //zauzimamo policijski terminal
@@ -113,8 +113,9 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
                 if(!Simulacija.pauza)
                 {
 
-                    if (Simulacija.c1.isSlobodan() && Simulacija.carinskiRed.size() > 0
-                            && Simulacija.carinskiRed.peek() == this) {
+                    if (Simulacija.carinskiRed.size() > 0
+                            && Simulacija.carinskiRed.peek() == this && Simulacija.c1.isRadi() && Simulacija.c1.isSlobodan()) {
+                        //ovdje izgubi
                         Simulacija.c1.setSlobodan(false);
 
                         if (bioNaP1) {
@@ -139,14 +140,23 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
 //                    }
 
                         Simulacija.c1.obradiVozilo(this);
+                        if(Simulacija.pauza){
+                            synchronized (Simulacija.lock){
+                                try{
+                                    Simulacija.lock.wait();
+                                }catch (InterruptedException e){
+                                    Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
+                                }
+                            }
+                        }
                         //if(!Simulacija.pauza)
                         //{
-                            Main.izbrisiVozilo(1);
+                        Main.izbrisiVozilo(1);
 
-                            System.out.println(this + ": izasao iz carinskog terminala 1!");
+                        System.out.println(this + ": izasao iz carinskog terminala 1!");
 
-                            Simulacija.c1.setSlobodan(true);
-                            zavrsenaCarinskaObrada = true;
+                        Simulacija.c1.setSlobodan(true);
+                        zavrsenaCarinskaObrada = true;
                         //}
                     }
                 }else{

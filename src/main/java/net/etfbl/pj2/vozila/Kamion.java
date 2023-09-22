@@ -50,7 +50,7 @@ public class Kamion extends Vozilo implements KamionInterfejs {
                 if(!Simulacija.pauza)
                 {
 
-                    if (Simulacija.granicniRed.size() > 0 && Simulacija.granicniRed.peek() == this && Simulacija.pk.isSlobodan()) {
+                    if (Simulacija.granicniRed.size() > 0 && Simulacija.granicniRed.peek() == this && Simulacija.pk.isRadi() && Simulacija.pk.isSlobodan()) {
 
                         System.out.println(this + ": usao u policijski terminal!");
 
@@ -91,13 +91,22 @@ public class Kamion extends Vozilo implements KamionInterfejs {
 
                     if (!Simulacija.pauza) {
 
-                        if (Simulacija.ck.isSlobodan()) {
+                        if (Simulacija.ck.isRadi() && Simulacija.ck.isSlobodan()) {
                             Simulacija.ck.setSlobodan(false);
                             Main.pomjeriVozilaNaCarinski(3, 2);
                             System.out.println(this + ": usao u carinski terminal!");
                             Simulacija.pk.setSlobodan(true);
 
                             mozeProciCarinskiTerminal = Simulacija.ck.obradiVozilo(this);
+                            if(Simulacija.pauza){
+                                synchronized (Simulacija.lock){
+                                    try{
+                                        Simulacija.lock.wait();
+                                    }catch (InterruptedException e){
+                                        Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
+                                    }
+                                }
+                            }
                             //if(!Simulacija.pauza)
                             //{
                                 if (!mozeProciCarinskiTerminal) {

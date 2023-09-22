@@ -8,6 +8,7 @@ public abstract class Terminal {
     protected boolean moguAutobusi;
     protected boolean moguKamioni;
     protected volatile boolean slobodan = true;
+    protected volatile boolean radi = true;
 
     public Terminal(){
         moguAutobusi = false;
@@ -43,5 +44,11 @@ public abstract class Terminal {
         this.slobodan = slobodan;
     }
 
+    public boolean isRadi() {
+        return radi;
+    }
 
+    public void setRadi(boolean radi) {
+        this.radi = radi;
+    }
 }
