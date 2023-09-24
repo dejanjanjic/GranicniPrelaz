@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Kamion extends Vozilo implements KamionInterfejs {
+    private static final long serialVersionUID = 1;
+
     private Teret teret;
     private int deklarisanaMasa;
     private boolean nedozvoljenaMasa;
@@ -66,8 +68,10 @@ public class Kamion extends Vozilo implements KamionInterfejs {
 
                         mozeProciPolicijskiTerminal = Simulacija.pk.obradiVozilo(this); //obradjujemo vozilo
                         if (!mozeProciPolicijskiTerminal) {
-                            Main.pomjeriNaTrecuScenu(3);
-                            System.out.println("!!!!!!!!!!!!!!!Pao policijsku provjeru!!!!!!!!!!!!!!!!!!!!!!");
+                            Main.izbrisiVozilo(3);
+                            Main.citajBinarni(this);
+
+                            System.out.println("Pao policijsku provjeru");
                             Simulacija.pk.setSlobodan(true);
                         }
                         //zavrsava
@@ -109,13 +113,11 @@ public class Kamion extends Vozilo implements KamionInterfejs {
                             }
                             //if(!Simulacija.pauza)
                             //{
-                                if (!mozeProciCarinskiTerminal) {
-                                    Main.pomjeriNaTrecuScenu(4);
-                                    System.out.println("Pao carinsku provjeru!");
-                                } else {
-                                    Main.izbrisiVozilo(2);
+                            Main.izbrisiVozilo(5);
+                            if (!mozeProciCarinskiTerminal) {
+                                System.out.println("Pao carinsku provjeru!");
                                 }
-                                System.out.println(this + ": izasao iz carinskog terminala!");
+                            System.out.println(this + ": izasao iz carinskog terminala!");
 
                                 Simulacija.ck.setSlobodan(true);
                                 zavrsenaCarinskaObrada = true;

@@ -6,6 +6,8 @@ import java.util.Random;
 
 public class IdentifikacioniDokument implements Serializable {
     private boolean neispravan;
+    private static final long serialVersionUID = 1;
+
     public IdentifikacioniDokument(){
         neispravan = new Random().nextInt(100) < 3;
     }

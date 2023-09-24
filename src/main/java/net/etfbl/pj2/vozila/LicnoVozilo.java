@@ -10,6 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LicnoVozilo extends Vozilo implements LicnoVoziloInterfejs {
+    private static final long serialVersionUID = 1;
+
     private static final int KAPACITET_PUTNIKA = 4;
 
     public LicnoVozilo() {
@@ -49,7 +51,8 @@ public class LicnoVozilo extends Vozilo implements LicnoVoziloInterfejs {
 
                         mozeProciPolicijskiTerminal = Simulacija.p1.obradiVozilo(this); //obradjujemo vozilo
                         if (!mozeProciPolicijskiTerminal) {
-                            Main.pomjeriNaTrecuScenu(1);
+                            Main.izbrisiVozilo(1);
+                            Main.citajBinarni(this);
                             System.out.println("Pao policijsku provjeru!");
                             Simulacija.p1.setSlobodan(true);
                         } else {
@@ -76,7 +79,9 @@ public class LicnoVozilo extends Vozilo implements LicnoVoziloInterfejs {
 
                         mozeProciPolicijskiTerminal = Simulacija.p2.obradiVozilo(this); //obradjujemo vozilo
                         if (!mozeProciPolicijskiTerminal) {
-                            Main.pomjeriNaTrecuScenu(2);
+                            Main.izbrisiVozilo(2);
+                            Main.citajBinarni(this);
+
                             System.out.println("Pao policijsku provjeru!");
                             Simulacija.p2.setSlobodan(true);
                         } else {
@@ -143,15 +148,13 @@ public class LicnoVozilo extends Vozilo implements LicnoVoziloInterfejs {
                                 }
                             }
                         }
-                        //if(!Simulacija.pauza)
-                        //{
-                        Main.izbrisiVozilo(1);
+                        Main.izbrisiVozilo(4);
 
                         System.out.println(this + ": izasao iz carinskog terminala 1!");
 
                         Simulacija.c1.setSlobodan(true);
                         zavrsenaCarinskaObrada = true;
-                        //}
+
                     }
                 }else{
                     synchronized (Simulacija.lock){

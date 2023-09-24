@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.etfbl.pj2.handler.ProjektniHandler;
+import net.etfbl.pj2.incident.Incident;
 import net.etfbl.pj2.osobe.*;
 public abstract class Vozilo extends Thread implements Serializable {
     protected Vozac vozac;
@@ -20,6 +21,9 @@ public abstract class Vozilo extends Thread implements Serializable {
     //flag koji ce se postaviti na false ako vozac nema ispravne dokumente
 
     protected boolean prosaoGranicu = false;
+    protected boolean imaoPolicijskiIncident = false;
+    protected boolean imaoCarinskiIncident = false;
+
     private static final File folderKaznjeni = new File("src" + File.separator +"Kaznjeni");
 
 
@@ -133,6 +137,22 @@ public abstract class Vozilo extends Thread implements Serializable {
 
     public void setPozicijaURedu(int pozicijaURedu) {
         this.pozicijaURedu = pozicijaURedu;
+    }
+
+    public boolean isImaoPolicijskiIncident() {
+        return imaoPolicijskiIncident;
+    }
+
+    public void setImaoPolicijskiIncident(boolean imaoPolicijskiIncident) {
+        this.imaoPolicijskiIncident = imaoPolicijskiIncident;
+    }
+
+    public boolean isImaoCarinskiIncident() {
+        return imaoCarinskiIncident;
+    }
+
+    public void setImaoCarinskiIncident(boolean imaoCarinskiIncident) {
+        this.imaoCarinskiIncident = imaoCarinskiIncident;
     }
 
     @Override

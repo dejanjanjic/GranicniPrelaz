@@ -1,8 +1,11 @@
 package net.etfbl.pj2.vozila.dodaci;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Teret {
+public class Teret implements Serializable {
+    private static final long serialVersionUID = 1;
+
 
     private boolean generisatiDokumentaciju;
     private int masa;

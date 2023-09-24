@@ -12,7 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TerminalWatcher extends Thread {
-    private String path = "src\\main\\resources\\terminal.txt";
+    private String path = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "terminal.txt";
 
     public TerminalWatcher() {
         setDaemon(true);

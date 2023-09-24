@@ -1,4 +1,9 @@
 package net.etfbl.pj2.vozila.dodaci;
 
-public class CarinskaDokumentacija {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class CarinskaDokumentacija implements Serializable {
+    private static final long serialVersionUID = 1;
+
 }

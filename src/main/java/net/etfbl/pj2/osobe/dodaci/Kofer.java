@@ -5,6 +5,7 @@ import java.util.Random;
 
 public class Kofer implements Serializable {
     private boolean imaNedozvoljeneStvari;
+    private static final long serialVersionUID = 1;
 
     public Kofer(){
         imaNedozvoljeneStvari = new Random().nextInt(100) < 10;

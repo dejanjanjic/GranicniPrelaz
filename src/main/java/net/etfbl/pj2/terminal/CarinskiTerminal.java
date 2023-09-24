@@ -1,6 +1,7 @@
 package net.etfbl.pj2.terminal;
 
 import net.etfbl.pj2.handler.ProjektniHandler;
+import net.etfbl.pj2.simulacija.Simulacija;
 import net.etfbl.pj2.vozila.Kamion;
 import net.etfbl.pj2.vozila.Vozilo;
 import net.etfbl.pj2.vozila.dodaci.CarinskaDokumentacija;
@@ -22,6 +23,15 @@ public class CarinskiTerminal extends Terminal{
             }catch (InterruptedException e){
                 Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
             }
+            if(Simulacija.pauza){
+                synchronized (Simulacija.lock){
+                    try{
+                        Simulacija.lock.wait();
+                    }catch (InterruptedException e){
+                        Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
+                    }
+                }
+            }
         }
         else if(vozilo instanceof AutobusInterfejs){
             for(Iterator<Putnik> it = vozilo.getPutnici().iterator(); it.hasNext();){
@@ -29,6 +39,15 @@ public class CarinskiTerminal extends Terminal{
                     Thread.sleep(vozilo.getVrijemeObradePutnika());
                 }catch (InterruptedException e){
                     Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
+                }
+                if(Simulacija.pauza){
+                    synchronized (Simulacija.lock){
+                        try{
+                            Simulacija.lock.wait();
+                        }catch (InterruptedException e){
+                            Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
+                        }
+                    }
                 }
                 Putnik putnik = it.next();
                 if(putnik.getKofer() != null && putnik.getKofer().isImaNedozvoljeneStvari()){
@@ -41,6 +60,15 @@ public class CarinskiTerminal extends Terminal{
                 Thread.sleep(500);
             }catch (InterruptedException e){
                 Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
+            }
+            if(Simulacija.pauza){
+                synchronized (Simulacija.lock){
+                    try{
+                        Simulacija.lock.wait();
+                    }catch (InterruptedException e){
+                        Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
+                    }
+                }
             }
             Kamion kamion = (Kamion) vozilo;
             if(kamion.isTrebaCarinskaDokumentacija()){

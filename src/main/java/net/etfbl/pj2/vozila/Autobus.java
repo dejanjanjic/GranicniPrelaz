@@ -13,6 +13,8 @@ import net.etfbl.pj2.osobe.*;
 import net.etfbl.pj2.vozila.interfejsi.AutobusInterfejs;
 
 public class Autobus extends Vozilo implements AutobusInterfejs {
+    private static final long serialVersionUID = 1;
+
     private static final int KAPACITET_PUTNIKA = 51;
     private TeretniProstor teretniProstor = new TeretniProstor();
     public Autobus() {
@@ -55,7 +57,8 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
 
                         mozeProciPolicijskiTerminal = Simulacija.p1.obradiVozilo(this); //obradjujemo vozilo
                         if (!mozeProciPolicijskiTerminal) {
-                            Main.pomjeriNaTrecuScenu(1);
+                            Main.izbrisiVozilo(1);
+                            Main.citajBinarni(this);
                             System.out.println("Pao policijsku provjeru!");
                             Simulacija.p1.setSlobodan(true);
                         } else {
@@ -82,7 +85,9 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
 
                         mozeProciPolicijskiTerminal = Simulacija.p2.obradiVozilo(this); //obradjujemo vozilo
                         if (!mozeProciPolicijskiTerminal) {
-                            Main.pomjeriNaTrecuScenu(2);
+                            Main.izbrisiVozilo(2);
+                            Main.citajBinarni(this);
+
                             System.out.println("Pao policijsku provjeru!");
                             Simulacija.p2.setSlobodan(true);
                         } else {
@@ -151,7 +156,7 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
                         }
                         //if(!Simulacija.pauza)
                         //{
-                        Main.izbrisiVozilo(1);
+                        Main.izbrisiVozilo(4);
 
                         System.out.println(this + ": izasao iz carinskog terminala 1!");
 
