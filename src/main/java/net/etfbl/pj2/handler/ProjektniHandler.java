@@ -14,7 +14,6 @@ public class ProjektniHandler {
 
     static {
         try {
-
             handler = new FileHandler("projektni.log");
             Logger.getLogger(Vozilo.class.getName()).addHandler(handler);
         } catch (IOException e) {

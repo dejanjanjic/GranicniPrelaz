@@ -16,17 +16,10 @@ public abstract class Vozilo extends Thread implements Serializable {
     protected int vrijemeObradePutnika = 0;
     protected ArrayList<Putnik> putnici;
     protected int idVozila;
-    protected int pozicijaURedu = -1;
     private static int brojacVozila = 0;
-    //flag koji ce se postaviti na false ako vozac nema ispravne dokumente
 
-    protected boolean prosaoGranicu = false;
     protected boolean imaoPolicijskiIncident = false;
     protected boolean imaoCarinskiIncident = false;
-
-    private static final File folderKaznjeni = new File("src" + File.separator +"Kaznjeni");
-
-
 
     public Vozilo(int brojPutnika) {
         this(brojPutnika, false);
@@ -82,62 +75,13 @@ public abstract class Vozilo extends Thread implements Serializable {
         return idVozila;
     }
 
-    public void setIdVozila(int idVozila) {
-        this.idVozila = idVozila;
-    }
-
-    //metoda koja izbacuje vozaca iz vozila
-    public void izbaciVozaca(Vozac vozac) {
-        File fileKaznjeni = kreirajFajlKaznjeni();
-        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(fileKaznjeni))) {
-            objectOutputStream.writeObject(vozac);
-        } catch (IOException e) {
-            Logger.getLogger(Vozilo.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
-        }
-    }
-
-    
-    //metoda koja izbacuje putnika iz vozila
-    public void izbaciPutnika(Putnik putnik){
-        File fileKaznjeni = kreirajFajlKaznjeni();
-        try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(fileKaznjeni))){
-            objectOutputStream.writeObject(putnik);
-        }catch(IOException e){
-            Logger.getLogger(Vozilo.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
-        }
-    }
-
-    private File kreirajFajlKaznjeni(){
-        //pravimo fileKaznjeni koristimo trenutno vrijeme u imenu kako bismo imali jedinstvene nazive
-        File fileKaznjeni = new File(folderKaznjeni.toString() + File.separator
-                + System.currentTimeMillis() + ".txt");
-        if(!fileKaznjeni.exists()){
-            if(!folderKaznjeni.exists()){
-                //kreiramo folder u slucaju da ne postoji
-                folderKaznjeni.mkdir();
-            }
-            try{
-                fileKaznjeni.createNewFile();
-            }catch (IOException e){
-                Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
-            }
-        }
-        return fileKaznjeni;
-    }
 
     public int getVrijemeObradePutnika() {
         return vrijemeObradePutnika;
     }
 
+    public abstract String prostIspis();
 
-
-    public int getPozicijaURedu() {
-        return pozicijaURedu;
-    }
-
-    public void setPozicijaURedu(int pozicijaURedu) {
-        this.pozicijaURedu = pozicijaURedu;
-    }
 
     public boolean isImaoPolicijskiIncident() {
         return imaoPolicijskiIncident;

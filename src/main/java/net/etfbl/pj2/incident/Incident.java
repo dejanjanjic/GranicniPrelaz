@@ -18,10 +18,6 @@ public class Incident implements Serializable {
         return idVozila;
     }
 
-    public void setIdVozila(int idVozila) {
-        this.idVozila = idVozila;
-    }
-
     public String getOpisProblema() {
         return opisProblema;
     }

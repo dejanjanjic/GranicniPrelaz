@@ -6,6 +6,7 @@ import net.etfbl.pj2.simulacija.Simulacija;
 import net.etfbl.pj2.vozila.dodaci.CarinskaDokumentacija;
 import net.etfbl.pj2.vozila.dodaci.Teret;
 import net.etfbl.pj2.vozila.interfejsi.KamionInterfejs;
+import net.etfbl.pj2.osobe.Putnik;
 
 import java.util.Random;
 import java.util.logging.Level;
@@ -39,13 +40,17 @@ public class Kamion extends Vozilo implements KamionInterfejs {
         vrijemeObradePutnika = 500;
     }
 
+    public String prostIspis(){
+        return "Kamion" + idVozila;
+    }
+
     @Override
     public void run() {
             boolean mozeProciPolicijskiTerminal = false;
             boolean mozeProciCarinskiTerminal = false;
             boolean zavrsenaPolicijskaObrada = false;
             boolean zavrsenaCarinskaObrada = false;
-
+            String opisIncidenta = prostIspis() + ": ";
 
 
             while (!zavrsenaPolicijskaObrada) {
@@ -54,7 +59,7 @@ public class Kamion extends Vozilo implements KamionInterfejs {
 
                     if (Simulacija.granicniRed.size() > 0 && Simulacija.granicniRed.peek() == this && Simulacija.pk.isRadi() && Simulacija.pk.isSlobodan()) {
 
-                        System.out.println(this + ": usao u policijski terminal!");
+                        System.out.println(prostIspis() + ": usao u policijski terminal!");
 
                         Simulacija.pk.setSlobodan(false); //zauzimamo policijski terminal
 
@@ -71,13 +76,15 @@ public class Kamion extends Vozilo implements KamionInterfejs {
                             Main.izbrisiVozilo(3);
                             Main.citajBinarni(this);
 
-                            System.out.println("Pao policijsku provjeru");
+                            System.out.println(prostIspis() + ": pao policijsku provjeru");
                             Simulacija.pk.setSlobodan(true);
                         }
                         //zavrsava
                         zavrsenaPolicijskaObrada = true;
-                        System.out.println(this + ": izasao iz policijskog terminala!");
-
+                        System.out.println(prostIspis() + ": izasao iz policijskog terminala!");
+                        if(imaoPolicijskiIncident && mozeProciPolicijskiTerminal){
+                            opisIncidenta += Main.citajBinarni(this);
+                        }
                     }
                 }else{
                     synchronized (Simulacija.lock){
@@ -98,7 +105,7 @@ public class Kamion extends Vozilo implements KamionInterfejs {
                         if (Simulacija.ck.isRadi() && Simulacija.ck.isSlobodan()) {
                             Simulacija.ck.setSlobodan(false);
                             Main.pomjeriVozilaNaCarinski(3, 2);
-                            System.out.println(this + ": usao u carinski terminal!");
+                            System.out.println(prostIspis() + ": usao u carinski terminal!");
                             Simulacija.pk.setSlobodan(true);
 
                             mozeProciCarinskiTerminal = Simulacija.ck.obradiVozilo(this);
@@ -115,14 +122,18 @@ public class Kamion extends Vozilo implements KamionInterfejs {
                             //{
                             Main.izbrisiVozilo(5);
                             if (!mozeProciCarinskiTerminal) {
-                                System.out.println("Pao carinsku provjeru!");
+                                System.out.println(prostIspis() + ": pao carinsku provjeru!");
+                                opisIncidenta += Main.citajIzTekstualnog(this);
                                 }
-                            System.out.println(this + ": izasao iz carinskog terminala!");
+                            if(imaoCarinskiIncident || imaoPolicijskiIncident){
+                                Main.postaviNaTrecuScenu(opisIncidenta, this);
+                            }
+                            System.out.println(prostIspis() + ": izasao iz carinskog terminala!");
 
                                 Simulacija.ck.setSlobodan(true);
                                 zavrsenaCarinskaObrada = true;
                             //}
-                            // TODO: 9.9.2023. Napraviti logiku za situacije kad vozila ne mogu proci terminal
+
                         }
                     }else{
                         synchronized (Simulacija.lock){
@@ -134,9 +145,6 @@ public class Kamion extends Vozilo implements KamionInterfejs {
                         }
                     }
                 }
-            }
-            else{
-                System.out.println(this + ": IZASAO SA GRANICE!");
             }
     }
 
@@ -178,8 +186,14 @@ public class Kamion extends Vozilo implements KamionInterfejs {
 
     @Override
     public String toString(){
-        return "Kamion " + idVozila + "{\nVozac: " + vozac + "\nBroj putnika: " +
-                brojPutnika + "\n}";
+        String vozilo = "Kamion " + idVozila + "{\nVozac: " + vozac + "\nBroj putnika: " +
+                brojPutnika + "\nMasa tereta: " + teret.getMasa() +"\nDeklarisana masa: " + deklarisanaMasa +
+                "\nTreba generisati carinsku dokumentaciju: " + trebaCarinskaDokumentacija + "\nInformacije o putnicima: ";
+        for (Putnik putnik :
+                putnici) {
+            vozilo += "\n" + putnik;
+        }
+        return vozilo + "\n}";
     }
 
 }

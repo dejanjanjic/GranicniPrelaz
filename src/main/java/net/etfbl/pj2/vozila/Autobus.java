@@ -29,6 +29,9 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
         vrijemeObradePutnika = 100;
     }
 
+    public String prostIspis(){
+        return "Autobus"+idVozila;
+    }
     @Override
     public void run() {
         boolean mozeProciPolicijskiTerminal = false;
@@ -37,6 +40,7 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
         boolean zavrsenaCarinskaObrada = false;
         boolean bioNaP1 = false;
         boolean bioNaP2 = false;
+        String opisIncidenta = prostIspis() + ": ";
 
         while (!zavrsenaPolicijskaObrada) {
             if(!Simulacija.pauza)
@@ -45,7 +49,7 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
                 if (Simulacija.granicniRed.size() > 0 && Simulacija.granicniRed.peek() == this) {
                     if (Simulacija.p1.isRadi() && Simulacija.p1.isSlobodan()) {
                         bioNaP1 = true;
-                        System.out.println(this + ": usao u policijski terminal 1!");
+                        System.out.println(prostIspis() + ": usao u policijski terminal 1!");
                         Simulacija.p1.setSlobodan(false); //zauzimamo policijski terminal
                         Main.pomjeriVozilaNaPolicijski(1);
 
@@ -59,12 +63,12 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
                         if (!mozeProciPolicijskiTerminal) {
                             Main.izbrisiVozilo(1);
                             Main.citajBinarni(this);
-                            System.out.println("Pao policijsku provjeru!");
+                            System.out.println(prostIspis() + ": pao policijsku provjeru!");
                             Simulacija.p1.setSlobodan(true);
                         } else {
                             Simulacija.carinskiRed.add(this);
                         }
-                        System.out.println(this + ": izasao iz policijskog terminala 1!");
+                        System.out.println(prostIspis() + ": izasao iz policijskog terminala 1!");
 
                         //zavrsava
                         //Simulacija.p1.setSlobodan(true); //izbrisati
@@ -73,7 +77,7 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
 
                     } else if (Simulacija.p2.isRadi() && Simulacija.p2.isSlobodan()) {
                         bioNaP2 = true;
-                        System.out.println(this + ": usao u policijski terminal 2!");
+                        System.out.println(prostIspis() + ": usao u policijski terminal 2!");
                         Simulacija.p2.setSlobodan(false); //zauzimamo policijski terminal
                         Main.pomjeriVozilaNaPolicijski(2);
                         Simulacija.granicniRed.poll(); //izlazi iz granicnog reda
@@ -88,16 +92,19 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
                             Main.izbrisiVozilo(2);
                             Main.citajBinarni(this);
 
-                            System.out.println("Pao policijsku provjeru!");
+                            System.out.println(prostIspis() + ": pao policijsku provjeru!");
                             Simulacija.p2.setSlobodan(true);
                         } else {
                             Simulacija.carinskiRed.add(this);
                         }
-                        System.out.println(this + ": izasao iz policijskog terminala 2!");
+                        System.out.println(prostIspis() + ": izasao iz policijskog terminala 2!");
                         //zavrsava
                         //Simulacija.p2.setSlobodan(true); //izbrisati
 
                         zavrsenaPolicijskaObrada = true;
+                    }
+                    if(imaoPolicijskiIncident && mozeProciPolicijskiTerminal){
+                        opisIncidenta += Main.citajBinarni(this);
                     }
 
                 }
@@ -136,13 +143,7 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
                         }
 
 
-                        System.out.println(this + ": usao u carinski terminal 1!");
-                        //uvijek licno vozilo moze proci carinski terminal
-                        //mozeProciCarinskiTerminal = Simulacija.c1.obradiVozilo(this);
-//                    if(!mozeProciCarinskiTerminal){
-//
-//                        System.out.println("Pao carinsku provjeru!");
-//                    }
+                        System.out.println(prostIspis() + ": usao u carinski terminal 1!");
 
                         Simulacija.c1.obradiVozilo(this);
                         if(Simulacija.pauza){
@@ -154,15 +155,19 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
                                 }
                             }
                         }
-                        //if(!Simulacija.pauza)
-                        //{
+                        if(imaoCarinskiIncident){
+                            opisIncidenta += Main.citajIzTekstualnog(this);
+                        }
+                        if(imaoCarinskiIncident || imaoPolicijskiIncident){
+                            Main.postaviNaTrecuScenu(opisIncidenta, this);
+                        }
                         Main.izbrisiVozilo(4);
 
-                        System.out.println(this + ": izasao iz carinskog terminala 1!");
+                        System.out.println(prostIspis() + ": izasao iz carinskog terminala 1!");
 
                         Simulacija.c1.setSlobodan(true);
                         zavrsenaCarinskaObrada = true;
-                        //}
+
                     }
                 }else{
                     synchronized (Simulacija.lock){
@@ -180,8 +185,13 @@ public class Autobus extends Vozilo implements AutobusInterfejs {
 
     @Override
     public String toString(){
-        return "Autobus " + idVozila + "{\nVozac: " + vozac + "\nBroj putnika: " +
-                brojPutnika + "\n}";
+        String vozilo = "Autobus " + idVozila + "{\nVozac: " + vozac + "\nBroj putnika: " +
+                brojPutnika  + "\nInformacije o putnicima: ";
+        for (Putnik putnik :
+                putnici) {
+            vozilo += "\n" + putnik;
+        }
+        return vozilo + "\n}";
     }
 
 }

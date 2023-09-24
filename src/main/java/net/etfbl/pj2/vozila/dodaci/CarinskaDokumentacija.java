@@ -1,6 +1,6 @@
 package net.etfbl.pj2.vozila.dodaci;
 
-import java.io.Serial;
+
 import java.io.Serializable;
 
 public class CarinskaDokumentacija implements Serializable {

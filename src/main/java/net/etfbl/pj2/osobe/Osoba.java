@@ -8,7 +8,6 @@ public abstract class Osoba implements Serializable {
     protected IdentifikacioniDokument identifikacioniDokument;
     protected Kofer kofer; //ako je null nema ga
     protected String ime;
-    protected static int rBr = 0;
     private static final long serialVersionUID = 1;
 
     String[] mogucaImena = {
@@ -38,7 +37,7 @@ public abstract class Osoba implements Serializable {
 
     @Override
     public String toString() {
-        return ime;
+        return ime + " (Validan dokument: " + !getIdentifikacioniDokument().isNeispravan() + ")";
     }
 
     public IdentifikacioniDokument getIdentifikacioniDokument() {

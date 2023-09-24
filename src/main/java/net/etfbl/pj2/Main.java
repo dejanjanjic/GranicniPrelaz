@@ -8,6 +8,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -158,6 +160,7 @@ public class Main extends Application {
         //Kreiranje trece scene
         StackPane root3 = new StackPane();
         AnchorPane anchorPane3 = new AnchorPane();
+        anchorPane3.setStyle("-fx-background-color: #474545;");
         Scene scene3 = new Scene(root3, 670, 690);
         root3.getChildren().add(anchorPane3);
 
@@ -249,26 +252,12 @@ public class Main extends Application {
                 probniRed) {
             dodajVozilo(vozilo);
         }
-
         Simulacija.granicniRed.peek().start();
         launch(args);
         Simulacija.pauza = false;
         synchronized (Simulacija.lock){
             Simulacija.lock.notifyAll();
         }
-//        Incident incident = new Incident(new LicnoVozilo(), "AAAAA");
-//        Incident incident1 = null;
-//        try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(binarniFajlNaziv))) {
-//            objectOutputStream.writeObject(incident);
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        }
-//        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(binarniFajlNaziv))){
-//            incident1 = (Incident) objectInputStream.readObject();
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        System.out.println(incident1.getOpisProblema());
     }
 
     public static void dodajVozilo(Vozilo vozilo) {
@@ -292,7 +281,15 @@ public class Main extends Application {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Informacije o vozilu");
             alert.setHeaderText(null);
-            alert.setContentText(vozilo.toString());
+
+            TextArea textArea = new TextArea(vozilo.toString());
+            textArea.setEditable(false);
+            textArea.setWrapText(true);
+
+            ScrollPane scrollPane = new ScrollPane(textArea);
+            scrollPane.setFitToWidth(true);
+
+            alert.getDialogPane().setContent(scrollPane);
             alert.showAndWait();
         });
         novoVozilo.getChildren().addAll(imageView);
@@ -394,7 +391,7 @@ public class Main extends Application {
         });
     }
 
-    public static void postaviNaTrecuScenu(Incident incident, Vozilo vozilo) {
+    public static void postaviNaTrecuScenu(String incident, Vozilo vozilo) {
 
         Platform.runLater(() -> {
             StackPane novoVozilo = new StackPane();
@@ -417,7 +414,7 @@ public class Main extends Application {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Opis problema");
                 alert.setHeaderText(null);
-                alert.setContentText(incident.getOpisProblema());
+                alert.setContentText(incident);
                 alert.showAndWait();
             });
             novoVozilo.getChildren().addAll(imageView);
@@ -478,22 +475,9 @@ public class Main extends Application {
         });
     }
 
-//    public static synchronized void citajBinarniFajl(){
-//        Platform.runLater(()->{
-//            synchronized (binarniFajlNaziv){
-//                File binarniFajl = new File(binarniFajlNaziv);
-//                try(ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(binarniFajl))){
-//
-//                }catch (IOException e){
-//                    Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
-//                }
-//            }
-//        });
-//    }
     public static synchronized void serijalizujUBinarni(Incident incident){
         File file = new File(binarniFajlNaziv);
         if(file.exists()) {
-            //Platform.runLater(() -> {
             try (ObjectOutputStreamWithoutHeader outputStream = new ObjectOutputStreamWithoutHeader(new FileOutputStream(file, true))) {
                 outputStream.writeObject(incident);
                 outputStream.flush();
@@ -509,10 +493,9 @@ public class Main extends Application {
                 Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
             }
         }
-        //});
     }
-    public static synchronized void citajBinarni(Vozilo vozilo){
-        Incident incident;
+    public static synchronized String citajBinarni(Vozilo vozilo){
+        Incident incident = null;
         File file= new File(binarniFajlNaziv);
         if(file.exists()){
             try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file))) {
@@ -522,10 +505,10 @@ public class Main extends Application {
                         if (incident == null){
                             break;
                         }
-                        System.out.println(incident.getOpisProblema());
+                        //System.out.println(vozilo.prostIspis() + "{\n" + incident.getOpisProblema() + "\n}");
                         if (incident.getIdVozila() == vozilo.getIdVozila()) {
 
-                            postaviNaTrecuScenu(incident, vozilo);
+                           // postaviNaTrecuScenu(incident, vozilo);
                             break;
                         }
                     }
@@ -536,7 +519,45 @@ public class Main extends Application {
                 Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
             }
         }
+        return incident == null ? "" : incident.getOpisProblema();
     }
+
+    public static synchronized void pisiUTekstualni(Incident incident){
+        File file = new File(tekstualniFajlNaziv);
+
+        try (PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(file, true)))) {
+            printWriter.println(incident.getIdVozila() + "#" + incident.getOpisProblema());
+        } catch (IOException e) {
+            Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
+        }
+
+    }
+    public static synchronized String citajIzTekstualnog(Vozilo vozilo){
+        File file = new File(tekstualniFajlNaziv);
+        Incident incident = null;
+        String s;
+        String[] arr;
+        if(file.exists()){
+            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+
+                while ((s = bufferedReader.readLine()) != null) {
+
+                    arr = s.split("#");
+                    incident = new Incident(Integer.parseInt(arr[0]), arr[1]);
+                    //System.out.println(vozilo.prostIspis() + "{\n" + incident.getOpisProblema() + "\n}");
+                    if (incident.getIdVozila() == vozilo.getIdVozila()) {
+                        //postaviNaTrecuScenu(incident, vozilo);
+                        break;
+                    }
+                    }
+
+            } catch (IOException e) {
+                Logger.getLogger(ProjektniHandler.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
+            }
+        }
+        return incident == null ? null : incident.getOpisProblema();
+    }
+
 
     private void updateTime() {
         seconds++;

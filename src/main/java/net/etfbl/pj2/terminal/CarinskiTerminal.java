@@ -1,6 +1,8 @@
 package net.etfbl.pj2.terminal;
 
+import net.etfbl.pj2.Main;
 import net.etfbl.pj2.handler.ProjektniHandler;
+import net.etfbl.pj2.incident.Incident;
 import net.etfbl.pj2.simulacija.Simulacija;
 import net.etfbl.pj2.vozila.Kamion;
 import net.etfbl.pj2.vozila.Vozilo;
@@ -34,6 +36,7 @@ public class CarinskiTerminal extends Terminal{
             }
         }
         else if(vozilo instanceof AutobusInterfejs){
+            String incidentOpis = "";
             for(Iterator<Putnik> it = vozilo.getPutnici().iterator(); it.hasNext();){
                 try {
                     Thread.sleep(vozilo.getVrijemeObradePutnika());
@@ -51,9 +54,13 @@ public class CarinskiTerminal extends Terminal{
                 }
                 Putnik putnik = it.next();
                 if(putnik.getKofer() != null && putnik.getKofer().isImaNedozvoljeneStvari()){
-                    vozilo.izbaciPutnika(putnik);
+                    vozilo.setImaoCarinskiIncident(true);
+                    incidentOpis += "Putnik " + putnik.getIme() + " ima nedozvoljene stvari u koferu. ";
                     it.remove();
                 }
+            }
+            if(vozilo.isImaoCarinskiIncident()) {
+                Main.pisiUTekstualni(new Incident(vozilo.getIdVozila(), incidentOpis));
             }
         } else if (vozilo instanceof KamionInterfejs) {
             try {
@@ -74,9 +81,8 @@ public class CarinskiTerminal extends Terminal{
             if(kamion.isTrebaCarinskaDokumentacija()){
                 kamion.setCarinskaDokumentacija(new CarinskaDokumentacija());
                 if(kamion.getTeret().getMasa() > kamion.getDeklarisanaMasa()){
-                    //izbaci kamion
-                    System.out.println(vozilo + ": IZBACEN!!!!!!!");
-                    // TODO: 9.9.2023.
+                    vozilo.setImaoCarinskiIncident(true);
+                    Main.pisiUTekstualni(new Incident(vozilo.getIdVozila(), "Ima vecu masu od deklarisane. "));
                     return false;
                 }
             }

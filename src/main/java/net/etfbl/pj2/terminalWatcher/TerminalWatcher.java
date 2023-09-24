@@ -2,7 +2,6 @@ package net.etfbl.pj2.terminalWatcher;
 
 import net.etfbl.pj2.handler.ProjektniHandler;
 import net.etfbl.pj2.simulacija.Simulacija;
-import net.etfbl.pj2.terminal.Terminal;
 
 import java.io.BufferedReader;
 import java.io.File;

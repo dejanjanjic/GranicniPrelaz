@@ -30,7 +30,5 @@ public class Simulacija {
     public static volatile boolean pauza = true;
     public static final Object lock = new Object();
     public static final ArrayList<Incident> vozilaSaIncidentima = new ArrayList<>();
-    
-
 
 }
