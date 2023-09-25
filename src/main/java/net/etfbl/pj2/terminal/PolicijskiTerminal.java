@@ -31,7 +31,7 @@ public class PolicijskiTerminal extends Terminal{
             Main.serijalizujUBinarni(incident);
 
             vozilo.setImaoPolicijskiIncident(true);
-            Main.postaviNaTrecuScenu(incident.getOpisProblema(), vozilo);
+            //Main.postaviNaTrecuScenu(incident.getOpisProblema(), vozilo);
             return false;
         }
         //provjeravamo putnike i dokumente

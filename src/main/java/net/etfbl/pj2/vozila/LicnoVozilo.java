@@ -55,7 +55,8 @@ public class LicnoVozilo extends Vozilo implements LicnoVoziloInterfejs {
                         mozeProciPolicijskiTerminal = Simulacija.p1.obradiVozilo(this); //obradjujemo vozilo
                         if (!mozeProciPolicijskiTerminal) {
                             Main.izbrisiVozilo(1);
-                            Main.citajBinarni(this);
+                            opisIncidenta = Main.citajBinarni(this);
+                            Main.postaviNaTrecuScenu(opisIncidenta, this);
                             System.out.println(prostIspis() + ": pao policijsku provjeru!");
                             Simulacija.p1.setSlobodan(true);
                         } else {
@@ -86,7 +87,8 @@ public class LicnoVozilo extends Vozilo implements LicnoVoziloInterfejs {
                         mozeProciPolicijskiTerminal = Simulacija.p2.obradiVozilo(this); //obradjujemo vozilo
                         if (!mozeProciPolicijskiTerminal) {
                             Main.izbrisiVozilo(2);
-                            Main.citajBinarni(this);
+                            opisIncidenta = Main.citajBinarni(this);
+                            Main.postaviNaTrecuScenu(opisIncidenta, this);
 
                             System.out.println(prostIspis() + ": pao policijsku provjeru!");
                             Simulacija.p2.setSlobodan(true);

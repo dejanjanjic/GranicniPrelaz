@@ -74,7 +74,8 @@ public class Kamion extends Vozilo implements KamionInterfejs {
                         mozeProciPolicijskiTerminal = Simulacija.pk.obradiVozilo(this); //obradjujemo vozilo
                         if (!mozeProciPolicijskiTerminal) {
                             Main.izbrisiVozilo(3);
-                            Main.citajBinarni(this);
+                            opisIncidenta = Main.citajBinarni(this);
+                            Main.postaviNaTrecuScenu(opisIncidenta, this);
 
                             System.out.println(prostIspis() + ": pao policijsku provjeru");
                             Simulacija.pk.setSlobodan(true);
